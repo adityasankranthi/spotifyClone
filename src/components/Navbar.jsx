@@ -3,6 +3,8 @@ import logo from '../assets/logo.svg';
 import home from '../assets/home.svg';
 import search from '../assets/search.svg';
 import { Download } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { getAccessTokenFromURL } from '/utils/getToken';
 
 const Navbar = () => {
   const navItems = [
@@ -10,6 +12,20 @@ const Navbar = () => {
     { text: 'Support', width: 'w-[61px]' },
     { text: 'Download', width: 'w-[77px]' },
   ];
+
+  const [token, setToken] = useState(null);
+
+  useEffect(() => {
+    const accessToken = getAccessTokenFromURL();
+    if (accessToken) {
+      setToken(accessToken);
+      window.history.pushState({}, null, "/"); // Clean URL
+    }
+  }, []);
+
+  const handleLogin = () => {
+    window.location.href = "http://localhost:4000/login";
+  };
 
   return (
     <header className="w-full h-16 bg-black flex items-center justify-between px-7 text-white">
@@ -60,12 +76,12 @@ const Navbar = () => {
         </button>
 
         {/* Sign Up */}
-        <button className="h-8 w-[72px] rounded-full hover:bg-white/10 transition text-[13px] font-bold text-[#b3b3b3]">
+        <button className="h-8 w-[72px] rounded-full hover:bg-white/10 transition text-[13px] font-bold text-[#b3b3b3]" onClick={handleLogin}>
           Sign up
         </button>
 
         {/* Log In */}
-        <button className="h-12 w-[108px] rounded-full bg-white text-black font-bold hover:bg-white/90 transition">
+        <button className="h-12 w-[108px] rounded-full bg-white text-black font-bold hover:bg-white/90 transition" onClick={handleLogin}>
           Log in
         </button>
       </div>

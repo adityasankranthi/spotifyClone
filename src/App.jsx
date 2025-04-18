@@ -1,6 +1,8 @@
 import React from 'react'
 import Navbar from './components/Navbar'
 import Sidebar  from './components/Sidebar'
+import Signupbar from './components/Signupbar'
+
 
 const App = () => {
   return (
@@ -8,8 +10,11 @@ const App = () => {
       <div className='h-16 flex'>
         <Navbar />
       </div>
-      <div className='flex h-[90%] px-4'>
+      <div className='flex h-[80%] px-4'>
         <Sidebar/>
+      </div>
+      <div className='flex px-4'>
+        <Signupbar />
       </div>
     </div>
   )

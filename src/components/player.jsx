@@ -1,20 +1,43 @@
-import React from 'react';
-import { assets, songsData } from '../assets/assets';
+import React, { useContext } from 'react';
+import { assets } from '../assets/assets';
+import { PlayerContext } from '../context/PlayerContext';
 
 const Player = () => {
+  const {
+    seekBar,
+    seekBg,
+    playstatus,
+    playAudio,
+    pauseAudio,
+    audioRef,
+    currentSong,
+    currentTime,
+    duration
+  } = useContext(PlayerContext);
+
+  // Format time to mm:ss
+  const formatTime = (time) => {
+    const minutes = Math.floor(time / 60) || 0;
+    const seconds = Math.floor(time % 60) || 0;
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  };
+
   return (
     <div className="h-[10%] bg-black flex items-center justify-between px-6 text-white w-full gap-4">
+      {/* Audio Element */}
+      <audio ref={audioRef} src={currentSong?.song} />
+
       {/* Left: Song Info */}
       <div className="hidden lg:flex items-center gap-4 w-[250px]">
         <img
-          src={songsData[0].image}
+          src={currentSong?.image}
           alt="song cover"
           className="w-12 h-12 rounded-lg"
         />
         <div className="flex flex-col">
-          <p className="text-sm font-semibold">{songsData[0].name}</p>
+          <p className="text-sm font-semibold">{currentSong?.name}</p>
           <p className="text-xs text-gray-400">
-            {songsData[0].desc.slice(0, 12)}
+            {currentSong?.desc?.slice(0, 12)}
           </p>
         </div>
       </div>
@@ -24,16 +47,30 @@ const Player = () => {
         <div className="flex gap-4 items-center">
           <img className="w-4 cursor-pointer" src={assets.shuffle_icon} alt="shuffle" />
           <img className="w-4 cursor-pointer" src={assets.prev_icon} alt="previous" />
-          <img className="w-6 cursor-pointer" src={assets.play_icon} alt="play" />
+
+          {playstatus ? (
+            <img onClick={pauseAudio} className="w-6 cursor-pointer" src={assets.pause_icon} alt="pause" />
+          ) : (
+            <img onClick={playAudio} className="w-6 cursor-pointer" src={assets.play_icon} alt="play" />
+          )}
+
           <img className="w-4 cursor-pointer" src={assets.next_icon} alt="next" />
           <img className="w-4 cursor-pointer" src={assets.loop_icon} alt="loop" />
         </div>
+
         <div className="flex items-center gap-3 w-full justify-center px-4">
-          <p className="text-xs text-gray-400">0:00</p>
-          <div className="w-full max-w-[500px] h-1 bg-gray-500 rounded-full relative cursor-pointer">
-            <div className="h-1 w-[30%] bg-green-500 rounded-full absolute top-0 left-0" />
+          <p className="text-xs text-gray-400">{formatTime(currentTime)}</p>
+          <div
+            ref={seekBg}
+            className="w-full max-w-[500px] h-1 bg-gray-500 rounded-full relative cursor-pointer"
+          >
+            <hr
+              ref={seekBar}
+              className="h-1 bg-green-500 rounded-full absolute top-0 left-0"
+              style={{ width: `${(currentTime / duration) * 100 || 0}%` }}
+            />
           </div>
-          <p className="text-xs text-gray-400">3:20</p>
+          <p className="text-xs text-gray-400">{formatTime(duration)}</p>
         </div>
       </div>
 
